@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16          # Docker image
+    container_name: featureflags-postgres
+    environment:
+      POSTGRES_USER: test       # database username
+      POSTGRES_PASSWORD: testPassword  # database password, local project
+      POSTGRES_DB: featureflags # name of the database
+    ports:
+      - "5432:5432"             # expose postgres on default port
+
+  redis:
+    image: redis:7
+    container_name: featureflags-redis
+    ports:
+      - "6379:6379"             # default redis port
