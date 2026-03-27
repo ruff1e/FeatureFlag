@@ -20,7 +20,7 @@ public class FeatureFlag {
     private UUID id;
 
     @Column(unique = true, nullable = false)
-    private String key;
+    private String key; // Key of a flag example : "new-checkout-flow", basically a unique identifier name
 
     @Column(nullable = false)
     private String name;
@@ -30,8 +30,8 @@ public class FeatureFlag {
     @Column(nullable = false)
     private boolean enabled = false;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Enumerated(EnumType.STRING) // To actually store "BOOLEAN" OR "MULTIVARIATE" in the db ->
+    @Column(nullable = false)// -> Because Java enums are int by default
     private FlagType flagType;
 
     @ManyToOne(fetch = FetchType.LAZY) // Don't load the user unless you specifically access it.

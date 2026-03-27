@@ -20,10 +20,13 @@ public class TargetingRule {
     private FeatureFlag flag;
 
     @Column(nullable = false)
-    private Integer priority;
+    private Integer priority; // the priority is evaluated from lowest number to highest
 
-    @Column(nullable = false)
-    private String attribute;
+
+    @Column(nullable = false) // context example: "country", "plan", "userId"
+    private String attribute; // example when someone calls /evaluate , they send a userContext map of attributes ->
+    // -> The rule checks if the attribute matches.
+
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

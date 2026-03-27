@@ -25,6 +25,6 @@ public class FlagVariant {
     @Column(nullable = false)
     private Integer percentage;
 
-    @Column(columnDefinition = "jsonb")
-    private String value;
+    @Column(columnDefinition = "jsonb") // to store the flag in json
+    private String value; // for a complex flag you can have, example: {"color": "#FF0000", "text": "Buy Now"}
 }

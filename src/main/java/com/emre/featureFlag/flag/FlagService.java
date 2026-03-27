@@ -31,11 +31,13 @@ public class FlagService {
         if (total != 100) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "Variant percentages must sum to 100, got: " + total
+                    "Variant percentages must sum to 100, currently it is: " + total
             );
         }
     }
 
+    // Transactional wraps the entire method. Everything either succeeds or fails so you don't get half created flag in db.
+    // For example if you save a flag successfully but get an error saving a variant, this makes the flag rollback as well.
     @Transactional
     public FlagResponse createFlag(CreateFlagRequest request) {
         if (flagRepository.existsByKey(request.getKey())) {
@@ -44,9 +46,11 @@ public class FlagService {
             );
         }
 
-        // BOOLEAN flags get auto-generated variants if they didnt provide any
+        // BOOLEAN flags get auto-generated variants if they didn't provide any
         if (request.getFlagType() == FlagType.BOOLEAN && request.getVariants().isEmpty()) {
             VariantRequest on = new VariantRequest();
+
+            // by default 0 percent of the users get the flag enabled so percentage is 0
             on.setKey("on");
             on.setPercentage(0);
 
@@ -78,20 +82,18 @@ public class FlagService {
         }
 
         // Map targeting rule requests → entities
-        for (TargetingRuleRequest rr : request.getTargetingRules()) {
+        for (TargetingRuleRequest trr : request.getTargetingRules()) {
             TargetingRule rule = new TargetingRule();
-            rule.setPriority(rr.getPriority());
-            rule.setAttribute(rr.getAttribute());
-            rule.setOperator(rr.getOperator());
-            rule.setValue(rr.getValue());
-            rule.setVariantKey(rr.getVariantKey());
+            rule.setPriority(trr.getPriority());
+            rule.setAttribute(trr.getAttribute());
+            rule.setOperator(trr.getOperator());
+            rule.setValue(trr.getValue());
+            rule.setVariantKey(trr.getVariantKey());
             rule.setFlag(flag);
             flag.getTargetingRules().add(rule);
         }
 
         FeatureFlag saved = flagRepository.save(flag);
-
-        // TODO Phase 7: auditService.record(saved, Action.CREATED, getCurrentUser(), null)
 
         return FlagResponse.from(saved);
     }
@@ -141,13 +143,13 @@ public class FlagService {
         if (request.getTargetingRules() != null) {
             flag.getTargetingRules().clear();
 
-            for (TargetingRuleRequest rr : request.getTargetingRules()) {
+            for (TargetingRuleRequest trr : request.getTargetingRules()) {
                 TargetingRule rule = new TargetingRule();
-                rule.setPriority(rr.getPriority());
-                rule.setAttribute(rr.getAttribute());
-                rule.setOperator(rr.getOperator());
-                rule.setValue(rr.getValue());
-                rule.setVariantKey(rr.getVariantKey());
+                rule.setPriority(trr.getPriority());
+                rule.setAttribute(trr.getAttribute());
+                rule.setOperator(trr.getOperator());
+                rule.setValue(trr.getValue());
+                rule.setVariantKey(trr.getVariantKey());
                 rule.setFlag(flag);
                 flag.getTargetingRules().add(rule);
             }
