@@ -27,7 +27,6 @@ public class TargetingRule {
     private String attribute; // example when someone calls /evaluate , they send a userContext map of attributes ->
     // -> The rule checks if the attribute matches.
 
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private RuleOperator operator;
