@@ -7,7 +7,6 @@ public record EvaluationResponse(
         String variantKey,
         String value
 ) {
-
     public static EvaluationResponse from(FlagVariant variant) {
         return new EvaluationResponse(
                 variant.getKey(),
