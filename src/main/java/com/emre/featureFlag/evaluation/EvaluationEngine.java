@@ -5,7 +5,6 @@ import com.emre.featureFlag.flag.FlagVariant;
 import com.emre.featureFlag.flag.RuleOperator;
 import com.emre.featureFlag.flag.TargetingRule;
 import org.springframework.stereotype.Component;
-
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
