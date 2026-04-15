@@ -1,5 +1,6 @@
 package com.emre.featureFlag.flag;
 
+import com.emre.featureFlag.cache.FlagCacheService;
 import com.emre.featureFlag.flag.dto.*;
 import com.emre.featureFlag.user.User;
 import com.emre.featureFlag.user.UserRepository;
@@ -17,6 +18,7 @@ public class FlagService {
 
     private final FlagRepository flagRepository;
     private final UserRepository userRepository;
+    private final FlagCacheService flagCacheService;
 
     // get the User entity for whoever is making the request
     private User getCurrentUser() {
@@ -155,6 +157,7 @@ public class FlagService {
             }
         }
 
+        flagCacheService.invalidate(key);
         return FlagResponse.from(flag);
     }
 
@@ -167,6 +170,7 @@ public class FlagService {
 
         flag.setEnabled(!flag.isEnabled());
 
+        flagCacheService.invalidate(key);
         return FlagResponse.from(flag);
     }
 
@@ -178,5 +182,6 @@ public class FlagService {
                 ));
 
         flagRepository.delete(flag);
+        flagCacheService.invalidate(key);
     }
 }
